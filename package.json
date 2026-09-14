@@ -1,9 +1,9 @@
 {
-	"name": "n8n-nodes-calcom",
+	"name": "@taurussoftware/n8n-nodes-calcom",
 	"version": "0.1.0",
 	"description": "n8n community node for Cal.com — create bookings and event types via the Cal.com API v2, plus a webhook trigger covering all Cal.com events",
 	"license": "MIT",
-	"homepage": "https://github.com/martinhey/n8n-nodes-calcom",
+	"homepage": "https://github.com/TaurusSoft/n8n-calcom",
 	"keywords": [
 		"n8n-community-node-package",
 		"n8n",
@@ -19,7 +19,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/martinhey/n8n-nodes-calcom.git"
+		"url": "https://github.com/TaurusSoft/n8n-calcom.git"
+	},
+	"publishConfig": {
+		"access": "public"
 	},
 	"scripts": {
 		"build": "n8n-node build",
