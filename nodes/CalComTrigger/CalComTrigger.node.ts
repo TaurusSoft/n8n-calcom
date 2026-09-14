@@ -57,7 +57,8 @@ export class CalComTrigger implements INodeType {
 		group: ['trigger'],
 		version: 1,
 		subtitle: '={{$parameter["events"].join(", ")}}',
-		description: 'Starts a workflow on any Cal.com webhook event',
+		description:
+			'Starts a workflow on any Cal.com webhook event. Pair it with the Cal.com node to create and manage bookings and event types.',
 		defaults: {
 			name: 'Cal.com V2 Trigger',
 		},

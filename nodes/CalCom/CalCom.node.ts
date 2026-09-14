@@ -12,7 +12,8 @@ export class CalCom implements INodeType {
 		group: ['input'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Create and manage Cal.com bookings and event types',
+		description:
+			'Create, reschedule and cancel Cal.com bookings, and manage event types. Pair it with the Cal.com V2 Trigger to react to Cal.com events.',
 		defaults: {
 			name: 'Cal.com',
 		},
