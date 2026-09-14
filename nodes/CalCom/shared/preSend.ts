@@ -1,16 +1,26 @@
 import type { IDataObject, IExecuteSingleFunctions, IHttpRequestOptions } from 'n8n-workflow';
 
 /**
- * n8n's declarative routing sends every top-level property unconditionally —
- * there is no empty-value guard in RoutingNode — so an optional field the user
- * left blank still reaches the API as "". Cal.com validates `attendee.email` as
- * an email address and rejects the empty string with a 400.
+ * Removes blank values from a request body before it is sent.
  *
- * Fields inside a `collection` are unaffected (RoutingNode skips options the
- * user never added), so this only has to cover top-level optional fields.
+ * n8n's declarative routing has no empty-value guard: RoutingNode calls
+ * `set(body, property, value)` unconditionally, so a node field the user left
+ * blank still reaches the API as "". Cal.com validates `attendee.email` as an
+ * email address and rejects the empty string with a 400.
  *
- * Applied to create-style operations only: on an update an empty string is a
- * meaningful instruction to clear the field, and must survive.
+ * The walk is recursive by necessity, not for completeness. Routing writes with
+ * dot notation, so a single node field can land at a nested body path —
+ * `attendeeEmail` becomes `body.attendee.email`, which is exactly the case this
+ * exists for. Pruning only the body's top level would miss it.
+ *
+ * What it does NOT need to reach: fields inside a `collection`. RoutingNode
+ * skips options the user never added, so those never produce blank values.
+ *
+ * `undefined` and `null` are dropped alongside "" because all three mean "no
+ * value given" here; `0`, `false` and `[]` are meaningful and are kept.
+ *
+ * Wired to create-style operations only. On an update an empty string is a
+ * deliberate instruction to clear a field and must survive.
  */
 export async function dropEmptyStrings(
 	this: IExecuteSingleFunctions,

@@ -6,6 +6,7 @@ import { bookingGetDescription } from './get';
 import { bookingGetAllDescription } from './getAll';
 import { bookingRescheduleDescription } from './reschedule';
 import { bookingCancelDescription } from './cancel';
+import { bookingDeclineDescription } from './decline';
 import { bookingMarkAbsentDescription } from './markAbsent';
 
 const showOnlyForBookings = {
@@ -170,5 +171,6 @@ export const bookingDescription: INodeProperties[] = [
 	...bookingGetAllDescription,
 	...bookingRescheduleDescription,
 	...bookingCancelDescription,
+	...bookingDeclineDescription,
 	...bookingMarkAbsentDescription,
 ];
