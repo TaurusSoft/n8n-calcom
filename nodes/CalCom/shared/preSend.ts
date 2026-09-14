@@ -30,5 +30,10 @@ export async function dropEmptyStrings(
 		prune(requestOptions.body as IDataObject);
 	}
 
+	// An emptied body is deliberately kept as {} rather than removed. Every
+	// booking endpoint this runs on declares `requestBody: required: true` with
+	// only optional fields (decline takes just `reason`), so the body must be
+	// present even when it carries nothing. Deleting it would turn a valid
+	// request into a missing-body 400.
 	return requestOptions;
 }

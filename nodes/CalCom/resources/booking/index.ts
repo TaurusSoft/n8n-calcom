@@ -6,6 +6,7 @@ import { bookingGetDescription } from './get';
 import { bookingGetAllDescription } from './getAll';
 import { bookingRescheduleDescription } from './reschedule';
 import { bookingCancelDescription } from './cancel';
+import { bookingMarkAbsentDescription } from './markAbsent';
 
 const showOnlyForBookings = {
 	resource: ['booking'],
@@ -113,6 +114,11 @@ export const bookingDescription: INodeProperties[] = [
 					send: { paginate: '={{ $parameter.returnAll }}' },
 					operations: {
 						pagination: {
+							// `pagination` is a SIBLING of `data` in the raw
+							// response ({ status, data, pagination }), and
+							// $response here is the response before postReceive
+							// unwraps `data`. So the path is deliberately
+							// $response.body.pagination, not ...body.data.pagination.
 							type: 'generic',
 							properties: {
 								continue: '={{ $response.body.pagination.hasMore }}',
@@ -164,4 +170,5 @@ export const bookingDescription: INodeProperties[] = [
 	...bookingGetAllDescription,
 	...bookingRescheduleDescription,
 	...bookingCancelDescription,
+	...bookingMarkAbsentDescription,
 ];
