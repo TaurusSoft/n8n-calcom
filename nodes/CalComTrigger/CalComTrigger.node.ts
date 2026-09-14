@@ -12,7 +12,7 @@ import {
 	type IWebhookResponseData,
 } from 'n8n-workflow';
 import { calComApiRequest } from '../CalCom/shared/transport';
-import { NO_SHOW_TRIGGERS, WEBHOOK_TRIGGERS } from '../CalCom/shared/constants';
+import { NO_SHOW_DEFAULTS, NO_SHOW_TRIGGERS, WEBHOOK_TRIGGERS } from '../CalCom/shared/constants';
 import { getEventTypes } from '../CalCom/listSearch/getEventTypes';
 import { getTeams } from '../CalCom/listSearch/getTeams';
 import { eventTypeLocator, teamLocator } from '../CalCom/shared/descriptions';
@@ -136,14 +136,18 @@ export class CalComTrigger implements INodeType {
 						name: 'time',
 						type: 'number',
 						typeOptions: { minValue: 1 },
+						// Must stay in sync with NO_SHOW_DEFAULTS.time — the n8n
+						// linter requires a literal here, so it cannot reference
+						// the constant directly.
 						default: 5,
 						description:
-							'How long after the booking start the no-show triggers are evaluated. Required together with No-Show Delay Unit when subscribing to a no-show event.',
+							'How long after the booking start the no-show triggers are evaluated. Only used by the two no-show events, which fall back to this default if you do not set it.',
 					},
 					{
 						displayName: 'No-Show Delay Unit',
 						name: 'timeUnit',
 						type: 'options',
+						// Must stay in sync with NO_SHOW_DEFAULTS.timeUnit.
 						default: 'MINUTE',
 						description: 'Unit for the no-show delay',
 						options: [
@@ -253,17 +257,13 @@ export class CalComTrigger implements INodeType {
 				}
 
 				// Cal.com rejects a no-show subscription that arrives without both
-				// values, so fail here with a message that names the cause.
+				// values. An n8n collection only yields the options the user
+				// actually added, so fall back to the same defaults the fields
+				// advertise rather than failing on an untouched Options section.
 				const subscribesToNoShow = events.some((event) => NO_SHOW_TRIGGERS.includes(event));
 				if (subscribesToNoShow) {
-					if (options.time === undefined || options.timeUnit === undefined) {
-						throw new NodeOperationError(
-							this.getNode(),
-							'The no-show events require both "No-Show Delay" and "No-Show Delay Unit" to be set under Options',
-						);
-					}
-					body.time = options.time;
-					body.timeUnit = options.timeUnit;
+					body.time = options.time ?? NO_SHOW_DEFAULTS.time;
+					body.timeUnit = options.timeUnit ?? NO_SHOW_DEFAULTS.timeUnit;
 				}
 
 				const endpoint = webhookCollectionPath.call(this);

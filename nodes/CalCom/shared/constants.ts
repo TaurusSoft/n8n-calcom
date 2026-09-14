@@ -28,6 +28,16 @@ export const NO_SHOW_TRIGGERS = [
 	'AFTER_GUESTS_CAL_VIDEO_NO_SHOW',
 ];
 
+/**
+ * Used both as the UI defaults of the No-Show Delay fields and as the fallback
+ * when the user subscribes to a no-show trigger without opening Options — an
+ * n8n collection only yields the options that were explicitly added.
+ */
+export const NO_SHOW_DEFAULTS = {
+	time: 5,
+	timeUnit: 'MINUTE',
+} as const;
+
 export const WEBHOOK_TRIGGERS: INodePropertyOptions[] = [
 	{ name: 'Booking Cancelled', value: 'BOOKING_CANCELLED' },
 	{ name: 'Booking Created', value: 'BOOKING_CREATED' },

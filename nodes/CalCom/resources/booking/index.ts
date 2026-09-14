@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import { CAL_API_VERSION, UNWRAP_DATA } from '../../shared/constants';
+import { dropEmptyStrings } from '../../shared/preSend';
 import { bookingCreateDescription } from './create';
 import { bookingGetDescription } from './get';
 import { bookingGetAllDescription } from './getAll';
@@ -60,6 +61,9 @@ export const bookingDescription: INodeProperties[] = [
 						url: '/v2/bookings',
 						headers: bookingHeaders,
 					},
+					// Attendee Email is optional for phone-only event types, but
+					// routing would still send it as "" when left blank.
+					send: { preSend: [dropEmptyStrings] },
 					output: { postReceive: UNWRAP_DATA },
 				},
 			},
@@ -74,6 +78,8 @@ export const bookingDescription: INodeProperties[] = [
 						url: '=/v2/bookings/{{$parameter.bookingUid}}/decline',
 						headers: bookingHeaders,
 					},
+					// Reason is optional and would otherwise be sent as "".
+					send: { preSend: [dropEmptyStrings] },
 					output: { postReceive: UNWRAP_DATA },
 				},
 			},

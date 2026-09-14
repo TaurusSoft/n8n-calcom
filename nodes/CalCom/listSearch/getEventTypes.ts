@@ -10,8 +10,26 @@ interface EventTypeListItem {
 }
 
 /**
- * GET /v2/event-types has no cursor/limit parameters, so the full list comes
- * back in one call and filtering happens client side.
+ * Personal and team event types live at different endpoints, so the dropdown
+ * follows whichever scope the node is currently set to. The action node uses
+ * "team", the trigger uses "teamEventType"; both mean the same thing here.
+ */
+function eventTypesEndpoint(this: ILoadOptionsFunctions): string {
+	const scope = this.getNodeParameter('scope', 'personal') as string;
+
+	if (scope === 'team' || scope === 'teamEventType') {
+		const teamId = this.getNodeParameter('teamId', '', { extractValue: true }) as string;
+		if (teamId) {
+			return `/v2/teams/${encodeURIComponent(teamId)}/event-types`;
+		}
+	}
+
+	return '/v2/event-types';
+}
+
+/**
+ * Neither event types endpoint exposes a cursor or limit parameter, so the full
+ * list comes back in one call and filtering happens client side.
  */
 export async function getEventTypes(
 	this: ILoadOptionsFunctions,
@@ -20,7 +38,7 @@ export async function getEventTypes(
 	const eventTypes = (await calComApiRequest.call(
 		this,
 		'GET',
-		'/v2/event-types',
+		eventTypesEndpoint.call(this),
 		undefined,
 		undefined,
 		CAL_API_VERSION.eventTypes,

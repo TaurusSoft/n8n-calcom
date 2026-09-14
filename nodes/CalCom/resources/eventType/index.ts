@@ -1,6 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import { CAL_API_VERSION, UNWRAP_DATA } from '../../shared/constants';
-import { teamLocator } from '../../shared/descriptions';
+import { eventTypeLocator, teamLocator } from '../../shared/descriptions';
 import { eventTypeCreateDescription } from './create';
 import { eventTypeUpdateDescription } from './update';
 import { eventTypeGetAllDescription } from './getAll';
@@ -110,15 +110,11 @@ export const eventTypeDescription: INodeProperties[] = [
 		displayOptions: { show: { ...showOnlyForEventTypes, scope: ['team'] } },
 	},
 	{
-		displayName: 'Event Type ID',
-		name: 'eventTypeId',
-		type: 'string',
-		default: '',
-		required: true,
+		...eventTypeLocator,
+		description: 'The event type to act on',
 		displayOptions: {
 			show: { ...showOnlyForEventTypes, operation: ['get', 'update', 'delete'] },
 		},
-		description: 'The numeric ID of the event type',
 	},
 	...eventTypeCreateDescription,
 	...eventTypeUpdateDescription,
